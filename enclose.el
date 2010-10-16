@@ -31,8 +31,36 @@
 
 ;;; Code:
 
+(defvar enclose-table
+  (let ((table (make-hash-table :test 'equal)))
+    (puthash "\"" "\"" table)
+    (puthash "'"  "'"  table)
+    (puthash "("  ")"  table)
+    (puthash "{"  "}"  table)
+    (puthash "["  "]"  table)
+    table)
+  "Table with enclosing punctuations.")
+
 (defvar enclose-mode-map (make-sparse-keymap)
   "Keymap for `enclose-mode'.")
+
+(defun enclose-insert (left)
+  "Insert LEFT, it's right buddy and places the cursor between."
+  (interactive)
+  (let ((right (gethash left enclose-table)))
+    (insert left)
+    (insert right)
+    (backward-char 1)))
+
+(defun enclose-define-keys ()
+  "Defines keybindings."
+  (maphash
+   (lambda (binding _)
+     (define-key enclose-mode-map (edmacro-parse-keys binding)
+       `(lambda ()
+          (interactive)
+          (enclose-insert ,binding))))
+   enclose-table))
 
 ;;;###autoload
 (define-minor-mode enclose-mode
@@ -41,8 +69,7 @@
   :lighter " enc"
   :keymap enclose-mode-map
   (when enclose-mode
-
-    ))
+    (enclose-define-keys)))
 
 ;;;###autoload
 (defun turn-on-enclose-mode ()
