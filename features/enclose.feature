@@ -40,3 +40,12 @@ Feature: Enclose
     Then I should see "]"
     And I should not see "(]"
     
+  Scenario: Do not remove pair when remove pair option is disabled
+    Given enclose mode is active
+    And remove pair option is disabled
+    When I press "("
+    Then I should see "()"
+    When I press "DEL"
+    Then I should see ")"
+    And I should not see "()"
+    

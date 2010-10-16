@@ -11,3 +11,6 @@
 (require 'enclose)
 (require 'espuds)
 (require 'ert)
+
+(After
+ (setq enclose-remove-pair t))

@@ -16,3 +16,7 @@
         (goto-char (point-min))
         (should (search-forward (concat left right) nil t))
         (backward-char 1)))
+
+(Given "^remove pair option is disabled$"
+       (lambda ()
+         (setq enclose-remove-pair nil)))

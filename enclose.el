@@ -44,6 +44,9 @@
 (defvar enclose-mode-map (make-sparse-keymap)
   "Keymap for `enclose-mode'.")
 
+(defvar enclose-remove-pair t
+  "Decides if pair should be removed, or just the left one.")
+
 (defconst enclose-del-key "DEL"
   "Delete key.")
 
@@ -64,12 +67,14 @@
 (defun enclose-remove ()
   "Removes char before and after, if matching."
   (interactive)
-  (let ((before (char-before)) (after (char-after)))
-    (if (and before after)
-        (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
-            (delete-region (- (point) 1) (+ (point) 1))
-          (enclose-remove-fallback))
-      (enclose-remove-fallback))))
+  (if enclose-remove-pair
+      (let ((before (char-before)) (after (char-after)))
+        (if (and before after)
+            (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
+                (delete-region (- (point) 1) (+ (point) 1))
+              (enclose-remove-fallback))
+          (enclose-remove-fallback)))
+    (enclose-remove-fallback)))
 
 (defun enclose-define-keys ()
   "Defines key bindings."
