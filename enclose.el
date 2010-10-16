@@ -67,7 +67,7 @@
         (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))))
 
 (defun enclose-define-keys ()
-  "Defines keybindings."
+  "Defines key bindings."
   (define-key enclose-mode-map (edmacro-parse-keys enclose-del-key) 'enclose-remove)
   (maphash
    (lambda (binding _)
