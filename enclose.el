@@ -56,15 +56,20 @@
     (insert right)
     (backward-char 1)))
 
+(defun enclose-remove-fallback ()
+  "When enclose remove is not to be used."
+  (let ((enclose-mode nil))
+    (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))
+
 (defun enclose-remove ()
   "Removes char before and after, if matching."
   (interactive)
-  (let ((before (char-to-string (char-before)))
-        (after (char-to-string (char-after))))
-    (if (equal (gethash before enclose-table) after)
-        (delete-region (- (point) 1) (+ (point) 1))
-      (let ((enclose-mode nil))
-        (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))))
+  (let ((before (char-before)) (after (char-after)))
+    (if (and before after)
+        (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
+            (delete-region (- (point) 1) (+ (point) 1))
+          (enclose-remove-fallback))
+      (enclose-remove-fallback))))
 
 (defun enclose-define-keys ()
   "Defines key bindings."
