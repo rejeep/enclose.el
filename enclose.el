@@ -44,6 +44,10 @@
 (defvar enclose-mode-map (make-sparse-keymap)
   "Keymap for `enclose-mode'.")
 
+(defconst enclose-del-key "DEL"
+  "Delete key.")
+
+
 (defun enclose-insert (left)
   "Insert LEFT, it's right buddy and places the cursor between."
   (interactive)
@@ -52,8 +56,19 @@
     (insert right)
     (backward-char 1)))
 
+(defun enclose-remove ()
+  "Removes char before and after, if matching."
+  (interactive)
+  (let ((before (char-to-string (char-before)))
+        (after (char-to-string (char-after))))
+    (if (equal (gethash before enclose-table) after)
+        (delete-region (- (point) 1) (+ (point) 1))
+      (let ((enclose-mode nil))
+        (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))))
+
 (defun enclose-define-keys ()
   "Defines keybindings."
+  (define-key enclose-mode-map (edmacro-parse-keys enclose-del-key) 'enclose-remove)
   (maphash
    (lambda (binding _)
      (define-key enclose-mode-map (edmacro-parse-keys binding)
