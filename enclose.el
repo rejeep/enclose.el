@@ -64,16 +64,20 @@
   (let ((enclose-mode nil))
     (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))
 
+(defun enclose-remove-pair ()
+  "Removes pair surrounding cursor if match."
+  (let ((before (char-before)) (after (char-after)))
+    (unless (and before after)
+      (return (enclose-remove-fallback)))
+    (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
+        (delete-region (- (point) 1) (+ (point) 1))
+      (enclose-remove-fallback))))
+
 (defun enclose-remove ()
-  "Removes char before and after, if matching."
+  "Called when user hits the delete key."
   (interactive)
   (if enclose-remove-pair
-      (let ((before (char-before)) (after (char-after)))
-        (if (and before after)
-            (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
-                (delete-region (- (point) 1) (+ (point) 1))
-              (enclose-remove-fallback))
-          (enclose-remove-fallback)))
+      (enclose-remove-pair)
     (enclose-remove-fallback)))
 
 (defun enclose-define-keys ()
