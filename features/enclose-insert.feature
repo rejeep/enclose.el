@@ -25,7 +25,7 @@ Feature: Insert
   Scenario: Do not enclose when in the middle of text
     When I insert "foobar"
     And I place the cursor between "foo" and "bar"
-    When I press "("
+    And I press "("
     Then I should see "foo(bar"
 
   Scenario: Do not enclose when text is selected
