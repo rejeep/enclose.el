@@ -1,4 +1,4 @@
-;;; enclose.el --- Enclose cursor within punctuations
+;;; enclose.el --- Enclose cursor within punctuation pairs
 
 ;; Copyright (C) 2010 Johan Andersson
 
@@ -139,7 +139,7 @@ before `enclose-mode'."
 
 ;;;###autoload
 (define-minor-mode enclose-mode
-  "Drag stuff around."
+  "Enclose cursor within punctuation pairs."
   :init-value nil
   :lighter " enc"
   :keymap enclose-mode-map
