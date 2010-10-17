@@ -70,8 +70,7 @@ this regex.")
 
 (defun enclose-insert-pair (left right)
   "Insert LEFT and RIGHT and place cursor between."
-  (insert left)
-  (insert right)
+  (insert left right)
   (backward-char 1))
 
 (defun enclose-insert-fallback (left)
