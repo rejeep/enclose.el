@@ -12,5 +12,11 @@
 (require 'espuds)
 (require 'ert)
 
+(Before
+ (switch-to-buffer (get-buffer-create "*enclose*"))
+ (erase-buffer)
+ (transient-mark-mode 1)
+ (deactivate-mark))
+
 (After
  (setq enclose-remove-pair t))

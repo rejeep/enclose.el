@@ -4,12 +4,8 @@ Feature: Insert
   I want to insert pairs around cursor
 
   Background:
-    Given I am in buffer "*enclose*"
-    And the buffer is empty
-    And enclose mode is active
-    And transient mark mode is active
-    And there is no region selected
-
+    Given enclose mode is active
+    
   Scenario: Enclose when no text
     When I press "("
     Then I should see "()"

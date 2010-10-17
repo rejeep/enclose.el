@@ -4,11 +4,7 @@ Feature: Remove
   I want to remove matching pairs around point
           
   Background:
-    Given I am in buffer "*enclose*"
-    And the buffer is empty
-    And enclose mode is active
-    And transient mark mode is active
-    And there is no region selected
+    Given enclose mode is active
   
   Scenario: Remove pair
     When I press "("
