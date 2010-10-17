@@ -7,6 +7,17 @@
          (setq enclose-remove-pair nil)))
 
 ;; TODO: Submit to Espuds
+(Then "^the cursor should be after \"\\(.+\\)\"$"
+      (lambda (right)
+        (should (looking-at (regexp-quote right)))))
+
+;; TODO: Submit to Espuds
+(Then "^the cursor should be before \"\\(.+\\)\"$"
+      (lambda (left)
+        (should (looking-back (regexp-quote left)))))
+
+
+;; TODO: Submit to Espuds
 (Then "^the cursor should be between \"\\(.+\\)\" and \"\\(.+\\)\"$"
       (lambda (left right)
         (should
