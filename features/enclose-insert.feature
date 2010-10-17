@@ -34,7 +34,7 @@ Feature: Insert
     And I press "("
     Then I should see "foo(bar"
 
-  Scenario: Do not enclose when text is selected
+  Scenario: Do not enclose when region is selected
     When I insert "foomebar"
     And I select "me"
     And I press "("
