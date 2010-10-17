@@ -2,14 +2,14 @@ Feature: Remove
   In order to be faster when typing
   As an Emacs user
   I want to remove matching pairs around point
-          
+
   Background:
     Given enclose mode is active
-  
+
   Scenario: Remove pair
     When I press "("
     Then I should see "()"
-    When I place the cursor between "(" and ")"
+    And the cursor should be between "(" and ")"
     And I press "DEL"
     Then I should not see anything
 
