@@ -42,7 +42,7 @@
     (puthash "{"  "}"  table)
     (puthash "["  "]"  table)
     table)
-  "Table with enclosing punctuations.")
+  "Table with encloser pairs.")
 
 (defvar enclose-mode-map (make-sparse-keymap)
   "Keymap for `enclose-mode'.")
