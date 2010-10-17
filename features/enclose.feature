@@ -9,11 +9,18 @@ Feature: Enclose
     When I press "<"
     Then I should see "<>"
     And the cursor should be between "<" and ">"
-  
+
   Scenario: Remove encloser
     Given enclose mode is active
     And I remove encloser "("
     When I press "("
     Then I should see "("
     And I should not see "()"
-    
+
+  Scenario: Global mode
+    When I enable the global mode
+    And I open temp file "global"
+    And I press "("
+    Then I should see "()"
+    And the cursor should be between "(" and ")"
+

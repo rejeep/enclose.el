@@ -58,3 +58,7 @@
 (Given "^I remove encloser \"\\(.\\)\"$"
        (lambda (left)
          (enclose-remove-encloser left)))
+
+(When "^I enable the global mode$"
+       (lambda ()
+         (enclose-global-mode 1)))

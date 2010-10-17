@@ -13,6 +13,9 @@
 (require 'ert)
 
 (Before
+ (enclose-global-mode -1)
+ (enclose-mode -1)
+
  (switch-to-buffer (get-buffer-create "*enclose*"))
  (erase-buffer)
  (transient-mark-mode 1)
