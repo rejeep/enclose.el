@@ -58,6 +58,16 @@
 this regex.")
 
 
+(defun enclose-add-encloser (left right)
+  "Add LEFT and RIGHT as an encloser pair."
+  (puthash left right enclose-table)
+  (enclose-define-key left))
+
+(defun enclose-remove-encloser (left)
+  "Remove LEFT as an encloser trigger."
+  (remhash left enclose-table)
+  (enclose-unset-key left))
+
 (defun enclose-fallback (key)
   "Executes function that KEY was bound to before `enclose-mode'."
   (let ((enclose-mode nil))
@@ -113,12 +123,19 @@ before `enclose-mode'."
   "Defines key bindings."
   (define-key enclose-mode-map (edmacro-parse-keys enclose-del-key) 'enclose-remove)
   (maphash
-   (lambda (binding _)
-     (define-key enclose-mode-map (edmacro-parse-keys binding)
-       `(lambda ()
-          (interactive)
-          (enclose-insert ,binding))))
+   (lambda (key _) (enclose-define-key key))
    enclose-table))
+
+(defun enclose-define-key (key)
+  "Add KEY as an encloser trigger."
+  (define-key enclose-mode-map (edmacro-parse-keys key)
+    `(lambda ()
+       (interactive)
+       (enclose-insert ,key))))
+
+(defun enclose-unset-key (key)
+  "Remove KEY as an encloser trigger."
+  (define-key enclose-mode-map (edmacro-parse-keys key) nil))
 
 ;;;###autoload
 (define-minor-mode enclose-mode

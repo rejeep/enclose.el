@@ -39,3 +39,11 @@
 (Then "I should not see anything"
       (lambda ()
         (should (equal (buffer-size) 0))))
+
+(Given "^I add encloser \"\\(.\\)/\\(.\\)\"$"
+       (lambda (left right)
+         (enclose-add-encloser left right)))
+
+(Given "^I remove encloser \"\\(.\\)\"$"
+       (lambda (left)
+         (enclose-remove-encloser left)))
