@@ -123,7 +123,8 @@ before `enclose-mode'."
   "Defines key bindings."
   (define-key enclose-mode-map (edmacro-parse-keys enclose-del-key) 'enclose-remove)
   (maphash
-   (lambda (key _) (enclose-define-key key))
+   (lambda (key _)
+     (enclose-define-key key))
    enclose-table))
 
 (defun enclose-define-key (key)
