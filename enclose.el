@@ -53,18 +53,42 @@
   "Delete key.")
 
 
+(defun enclose-fallback (key)
+  "Executes function that KEY was bound to before `enclose-mode'."
+  (let ((enclose-mode nil))
+    (call-interactively (key-binding (edmacro-parse-keys key)))))
+
+(defun enclose-pairing-p ()
+  "Checks if insertion should be a pair or not.
+It should be a pair if no region is selected and text before and after
+cursor is not text or digits."
+  (unless (region-active-p)
+    (let* ((regex "[a-zA-Z0-9]+")
+           (right (looking-at regex))
+           (left (looking-back regex)))
+      (not (and left right)))))
+
+(defun enclose-insert-pair (left right)
+  "Insert LEFT and RIGHT and place cursor between."
+  (insert left)
+  (insert right)
+  (backward-char 1))
+
+(defun enclose-insert-fallback (left)
+  "Do not insert pair, fallback and call function LEFT was bound to
+before `enclose-mode'."
+  (enclose-fallback left))
+
 (defun enclose-insert (left)
-  "Insert LEFT, it's right buddy and places the cursor between."
-  (interactive)
-  (let ((right (gethash left enclose-table)))
-    (insert left)
-    (insert right)
-    (backward-char 1)))
+  "Called when enclose key is hit."
+  (if (enclose-pairing-p)
+      (let ((right (gethash left enclose-table)))
+        (enclose-insert-pair left right))
+    (enclose-insert-fallback left)))
 
 (defun enclose-remove-fallback ()
   "When enclose remove is not to be used."
-  (let ((enclose-mode nil))
-    (call-interactively (key-binding (edmacro-parse-keys enclose-del-key)))))
+  (enclose-fallback enclose-del-key))
 
 (defun enclose-remove-pair ()
   "Removes pair surrounding cursor if match."
