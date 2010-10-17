@@ -53,7 +53,7 @@
 (defconst enclose-del-key "DEL"
   "Delete key.")
 
-(defvar enclose-anti-regex "[a-zA-Z0-9]+"
+(defconst enclose-anti-regex "[a-zA-Z0-9]+"
   "Enclosing functionality should not be activated when surrounded by
 this regex.")
 
