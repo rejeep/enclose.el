@@ -22,6 +22,12 @@ Feature: Insert
     Then I should see "foo()"
     And the cursor should be between "(" and ")"
 
+  Scenario: Do not enclose when at beginning of text
+    When I insert "foo"
+    And I go to beginning of buffer
+    And I press "("
+    Then I should see "(foo"
+
   Scenario: Do not enclose when in the middle of text
     When I insert "foobar"
     And I place the cursor between "foo" and "bar"

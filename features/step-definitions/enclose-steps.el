@@ -11,8 +11,8 @@
       (lambda (left right)
         (should
          (and
-         (looking-back (regexp-quote left))
-         (looking-at (regexp-quote right))))))
+          (looking-back (regexp-quote left))
+          (looking-at (regexp-quote right))))))
 
 ;; TODO: Submit to Espuds
 (When "^I place the cursor between \"\\(.+\\)\" and \"\\(.+\\)\"$"
@@ -34,3 +34,8 @@
 
 ;; TODO: Submit to Espuds
 (When "^I go to end of buffer$" 'end-of-buffer)
+
+;; TODO: Submit to Espuds?
+(Then "I should not see anything"
+      (lambda ()
+        (should (equal (buffer-size) 0))))

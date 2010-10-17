@@ -53,6 +53,10 @@
 (defconst enclose-del-key "DEL"
   "Delete key.")
 
+(defvar enclose-anti-regex "[a-zA-Z0-9]+"
+  "Enclosing functionality should not be activated when surrounded by
+this regex.")
+
 
 (defun enclose-fallback (key)
   "Executes function that KEY was bound to before `enclose-mode'."
@@ -60,14 +64,9 @@
     (call-interactively (key-binding (edmacro-parse-keys key)))))
 
 (defun enclose-pairing-p ()
-  "Checks if insertion should be a pair or not.
-It should be a pair if no region is selected and text before and after
-cursor is not text or digits."
+  "Checks if insertion should be a pair or not."
   (unless (region-active-p)
-    (let* ((regex "[a-zA-Z0-9]+")
-           (right (looking-at regex))
-           (left (looking-back regex)))
-      (not (and left right)))))
+    (not (looking-at enclose-anti-regex))))
 
 (defun enclose-insert-pair (left right)
   "Insert LEFT and RIGHT and place cursor between."
@@ -100,10 +99,14 @@ before `enclose-mode'."
         (delete-region (- (point) 1) (+ (point) 1))
       (enclose-remove-fallback))))
 
+(defun enclose-remove-pairing-p ()
+  "Checks if removing should be on pair or not."
+  (and enclose-remove-pair (not (looking-at (concat "." enclose-anti-regex)))))
+
 (defun enclose-remove ()
   "Called when user hits the delete key."
   (interactive)
-  (if enclose-remove-pair
+  (if (enclose-remove-pairing-p)
       (enclose-remove-pair)
     (enclose-remove-fallback)))
 
