@@ -60,7 +60,7 @@ this regex.")
 
 (defun enclose-insert (left)
   "Called when enclose key is hit."
-  (if (enclose-pairing-p)
+  (if (enclose-insert-pairing-p)
       (let ((right (gethash left enclose-table)))
         (enclose-insert-pair left right))
     (enclose-insert-fallback left)))
@@ -75,7 +75,7 @@ this regex.")
 before `enclose-mode'."
   (enclose-fallback left))
 
-(defun enclose-pairing-p ()
+(defun enclose-insert-pairing-p ()
   "Checks if insertion should be a pair or not."
   (unless (region-active-p)
     (not (looking-at enclose-anti-regex))))
