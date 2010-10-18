@@ -10,7 +10,7 @@ Feature: Remove
     When I press "("
     Then I should see "()"
     And the cursor should be between "(" and ")"
-    And I press "DEL"
+    When I press "DEL"
     Then I should not see anything
 
   Scenario: Remove multiple pairs
