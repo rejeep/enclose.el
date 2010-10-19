@@ -20,6 +20,11 @@
 
 ;; TODO: Submit below to Espuds
 
+(When "^I switch to buffer \"\\(.+\\)\"$"
+      (lambda (buffer)
+        (let ((v (vconcat [?\C-x ?b] (string-to-vector buffer))))
+          (execute-kbd-macro v))))
+
 (Then "^the cursor should be after \"\\(.+\\)\"$"
       (lambda (right)
         (should (looking-at (regexp-quote right)))))

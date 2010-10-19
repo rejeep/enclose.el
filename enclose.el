@@ -49,9 +49,11 @@
 
 (defvar enclose-focus nil
   "If cursor is in focus or not.")
+(make-variable-buffer-local 'enclose-focus)
 
 (defvar enclose-last-pos 0
   "Last position an enclose command was executed at.")
+(make-variable-buffer-local 'enclose-last-pos)
 
 (defvar enclose-remove-pair t
   "Decides if pair should be removed, or just the left one.")

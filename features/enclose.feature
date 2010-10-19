@@ -24,3 +24,19 @@ Feature: Enclose
     Then I should see "()"
     And the cursor should be between "(" and ")"
 
+  Scenario: Preserve focus when switching buffers
+    Given I am in buffer "one"
+    And I turn on enclose-mode
+    When I press "("
+    Then I should see "()"
+    And the cursor should be between "(" and ")"
+    When I switch to buffer "two"
+    And I turn on enclose-mode
+    And I press "("
+    Then I should see "()"
+    And the cursor should be between "(" and ")"
+    When I press "DEL"
+    Then I should not see anything
+    When I switch to buffer "one"
+    And I press "DEL"
+    Then I should not see anything
