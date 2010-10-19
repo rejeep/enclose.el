@@ -132,7 +132,7 @@ before `enclose-mode'."
   (let ((enclose-mode nil))
     (call-interactively
      (key-binding
-      (edmacro-parse-keys key)))))
+      (read-kbd-macro key)))))
 
 (defun enclose-define-keys ()
   "Defines key bindings."
