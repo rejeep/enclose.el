@@ -47,6 +47,12 @@
 (defvar enclose-mode-map (make-sparse-keymap)
   "Keymap for `enclose-mode'.")
 
+(defvar enclose-focus nil
+  "If cursor is in focus or not.")
+
+(defvar enclose-last-pos 0
+  "Last position an enclose command was executed at.")
+
 (defvar enclose-remove-pair t
   "Decides if pair should be removed, or just the left one.")
 
@@ -60,20 +66,23 @@ this regex.")
 
 (defun enclose-insert (left)
   "Called when enclose key is hit."
-  (if (enclose-insert-pairing-p)
-      (let ((right (gethash left enclose-table)))
-        (enclose-insert-pair left right))
-    (enclose-insert-fallback left)))
+  (enclose-command
+   (if (enclose-insert-pairing-p)
+       (let ((right (gethash left enclose-table)))
+         (enclose-insert-pair left right))
+     (enclose-insert-fallback left))))
 
 (defun enclose-insert-pair (left right)
   "Insert LEFT and RIGHT and place cursor between."
   (insert left right)
-  (backward-char 1))
+  (backward-char 1)
+  (enclose-focus))
 
 (defun enclose-insert-fallback (left)
   "Do not insert pair, fallback and call function LEFT was bound to
 before `enclose-mode'."
-  (enclose-fallback left))
+  (enclose-fallback left)
+  (enclose-unfocus))
 
 (defun enclose-insert-pairing-p ()
   "Checks if insertion should be a pair or not."
@@ -83,29 +92,30 @@ before `enclose-mode'."
 (defun enclose-remove ()
   "Called when user hits the delete key."
   (interactive)
-  (if (enclose-remove-pairing-p)
-      (enclose-remove-pair)
-    (enclose-remove-fallback)))
+  (enclose-command
+   (if (enclose-remove-pairing-p)
+       (enclose-remove-pair)
+     (enclose-remove-fallback))))
 
 (defun enclose-remove-pair ()
-  "Removes pair surrounding cursor if match."
-  (let ((before (char-before)) (after (char-after)))
-    (unless (and before after)
-      (return (enclose-remove-fallback)))
-    (if (equal (gethash (char-to-string before) enclose-table) (char-to-string after))
-        (delete-region (- (point) 1) (+ (point) 1))
-      (enclose-remove-fallback))))
+  "Remove pair around cursor."
+  (delete-region (- (point) 1) (+ (point) 1))
+  (enclose-focus))
 
 (defun enclose-remove-fallback ()
   "When enclose remove is not to be used."
-  (enclose-fallback enclose-del-key))
+  (enclose-fallback enclose-del-key)
+  (enclose-unfocus))
 
 (defun enclose-remove-pairing-p ()
   "Checks if removing should be on pair or not."
   (and
    enclose-remove-pair
-   (not
-    (looking-at (concat "." enclose-anti-regex)))))
+   enclose-focus
+   (not (or (bobp) (eobp)))
+   (let ((before (char-to-string (char-before)))
+         (after (char-to-string (char-after))))
+     (equal (gethash before enclose-table) after))))
 
 (defun enclose-add-encloser (left right)
   "Add LEFT and RIGHT as an encloser pair."
@@ -148,6 +158,23 @@ before `enclose-mode'."
   "Binds KEY to FN in `enclose-mode-map'."
   (define-key enclose-mode-map (edmacro-parse-keys key) fn))
 
+(defun enclose-focus ()
+  (setq enclose-focus t))
+
+(defun enclose-unfocus ()
+  (setq enclose-focus nil))
+
+(defun enclose-post-command ()
+  "Unfocus if cursor has moved."
+  (if (/= enclose-last-pos (point))
+      (enclose-unfocus)))
+
+(defmacro enclose-command (&rest body)
+  "Executes BODY and then updates `enclose-last-pos' accordingly."
+  `(progn
+     ,@body
+     (setq enclose-last-pos (point))))
+
 
 ;;;###autoload
 (define-minor-mode enclose-mode
@@ -155,8 +182,11 @@ before `enclose-mode'."
   :init-value nil
   :lighter " enc"
   :keymap enclose-mode-map
-  (when enclose-mode
-    (enclose-define-keys)))
+  (cond (enclose-mode
+         (enclose-define-keys)
+         (add-hook 'post-command-hook 'enclose-post-command))
+        (t
+         (remove-hook 'post-command-hook 'enclose-post-command))))
 
 ;;;###autoload
 (defun turn-on-enclose-mode ()

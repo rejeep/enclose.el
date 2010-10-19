@@ -44,3 +44,12 @@ Feature: Remove
     And I place the cursor between "(" and ")"
     And I press "DEL"
     Then I should see "foo)bar"
+  
+  Scenario: Do not remove pair when cursor is moved
+    When I press "("
+    Then I should see "()"
+    When I press "C-f"
+    And I press "C-b"
+    And I press "DEL"
+    Then I should see ")"
+    And I should not see "()"
