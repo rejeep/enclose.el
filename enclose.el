@@ -30,7 +30,7 @@
 ;;; Commentary:
 
 ;; Enclose is a minor mode that encloses cursor within punctuation
-;; paris. For example, hitting the key "(" will insert "(" and ")" and
+;; pairs. For example, hitting the key "(" will insert "(" and ")" and
 ;; place the cursor in between.
 
 ;; To use Enclose mode, make sure that this file is in Emacs load-path:
@@ -122,7 +122,7 @@ or before text matching this regex.")
        (equal (gethash (char-to-string (char-before)) enclose-table) key))))
 
 (defun enclose-insert (left)
-  "Inserts LEFT and right buddy or fallbacks."
+  "Inserts LEFT and right buddy or falls back."
   (if (enclose-insert-pair-p left)
       (let ((right (gethash left enclose-table)))
         (enclose-insert-pair left right))
