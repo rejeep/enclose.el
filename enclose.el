@@ -85,7 +85,7 @@ this regex.")
    (let ((value (gethash key enclose-table)))
      (if value (equal key value) t))
    (if (char-before)
-     (equal (gethash (char-to-string (char-before)) enclose-table) key))))
+       (equal (gethash (char-to-string (char-before)) enclose-table) key))))
 
 (defun enclose-insert (left)
   "Inserts LEFT and right buddy or fallbacks."
