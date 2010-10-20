@@ -22,13 +22,15 @@ Feature: Insert
     When I insert "foo"
     And I go to beginning of buffer
     And I press "("
-    Then I should see "(foo"
+    Then I should not see "()foo"
+    But I should see "(foo"
 
   Scenario: Do not enclose when in the middle of text
     When I insert "foobar"
     And I place the cursor between "foo" and "bar"
     And I press "("
-    Then I should see "foo(bar"
+    Then I should not see "foo()bar"
+    But I should see "foo(bar"
 
   Scenario: Do not enclose when region is selected
     When I insert "foomebar"

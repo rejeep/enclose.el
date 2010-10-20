@@ -19,8 +19,8 @@ Feature: Remove
     Then I should see "(())"
     And the cursor should be between "((" and "))"
     When I press "DEL"
-    Then I should see "()"
-    And I should not see "(())"
+    Then I should not see "(())"
+    But I should see "()"
     When I press "DEL"
     Then I should not see anything
 
@@ -28,16 +28,16 @@ Feature: Remove
     When I insert "(]"
     And I place the cursor between "(" and "]"
     And I press "DEL"
-    Then I should see "]"
-    And I should not see "(]"
+    Then I should not see "(]"
+    But I should see "]"
 
   Scenario: Do not remove pair when remove pair option is disabled
     Given remove pair option is disabled
     When I press "("
     Then I should see "()"
     When I press "DEL"
-    Then I should see ")"
-    And I should not see "()"
+    Then I should not see "()"
+    But I should see ")"
 
   Scenario: Do not remove pair when cursor is within text
     When I insert "foo()bar"
@@ -51,5 +51,5 @@ Feature: Remove
     When I press "C-f"
     And I press "C-b"
     And I press "DEL"
-    Then I should see ")"
-    And I should not see "()"
+    Then I should not see "()"
+    But I should see ")"

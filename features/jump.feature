@@ -10,8 +10,8 @@ Feature: Jump
     When I press "("
     Then I should see "()"
     When I press ")"
-    Then I should see "()"
-    And I should not see "())"
+    Then I should not see "())"
+    But I should see "()"
     And the cursor should be after "()"
 
   Scenario: Do not jump when moved
@@ -27,5 +27,6 @@ Feature: Jump
     When I press "("
     Then I should see "()"
     And I press "'"
-    Then I should see "('')"
+    Then I should not see "()"
+    But I should see "('')"
     And the cursor should be between "('" and "')"
