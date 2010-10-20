@@ -66,48 +66,74 @@
 this regex.")
 
 
-(defun enclose-insert (left)
-  "Called when enclose key is hit."
+(defun enclose-trigger (key)
+  "Called when trigger key (any key or value in `enclose-table') is hit."
+  (if (enclose-jump-p key)
+      (enclose-jump)
+    (enclose-insert key)))
+
+(defun enclose-jump ()
+  "Jump the cursor."
   (enclose-command
-   (if (enclose-insert-pairing-p)
-       (let ((right (gethash left enclose-table)))
-         (enclose-insert-pair left right))
-     (enclose-insert-fallback left))))
+   (forward-char 1)
+   (enclose-unfocus)))
+
+(defun enclose-jump-p (key)
+  "Checks if cursor should jump."
+  (and
+   enclose-focus
+   (let ((value (gethash key enclose-table)))
+     (if value (equal key value) t))
+   (if (char-before)
+     (equal (gethash (char-to-string (char-before)) enclose-table) key))))
+
+(defun enclose-insert (left)
+  "Inserts LEFT and right buddy or fallbacks."
+  (if (enclose-insert-pair-p left)
+      (let ((right (gethash left enclose-table)))
+        (enclose-insert-pair left right))
+    (enclose-insert-fallback left)))
 
 (defun enclose-insert-pair (left right)
   "Insert LEFT and RIGHT and place cursor between."
-  (insert left right)
-  (backward-char 1)
-  (enclose-focus))
+  (enclose-command
+   (insert left right)
+   (backward-char 1)
+   (enclose-focus)))
 
 (defun enclose-insert-fallback (left)
   "Do not insert pair, fallback and call function LEFT was bound to
 before `enclose-mode'."
-  (enclose-fallback left)
-  (enclose-unfocus))
+  (enclose-command
+   (enclose-fallback left)
+   (enclose-unfocus)))
 
-(defun enclose-insert-pairing-p ()
+(defun enclose-insert-pair-p (key)
   "Checks if insertion should be a pair or not."
   (unless (region-active-p)
-    (not (looking-at enclose-anti-regex))))
+    (and
+     (gethash key enclose-table)
+     (not
+      (looking-at enclose-anti-regex)))))
 
 (defun enclose-remove ()
   "Called when user hits the delete key."
   (interactive)
-  (enclose-command
-   (if (enclose-remove-pairing-p)
-       (enclose-remove-pair)
-     (enclose-remove-fallback))))
+  (if (enclose-remove-pairing-p)
+      (enclose-remove-pair)
+    (enclose-remove-fallback)))
 
 (defun enclose-remove-pair ()
   "Remove pair around cursor."
-  (delete-region (- (point) 1) (+ (point) 1))
-  (enclose-focus))
+  (enclose-command
+   (delete-region (- (point) 1) (+ (point) 1))
+   (enclose-focus)))
 
 (defun enclose-remove-fallback ()
   "When enclose remove is not to be used."
-  (enclose-fallback enclose-del-key)
-  (enclose-unfocus))
+  (enclose-command
+   (enclose-fallback enclose-del-key)
+   (enclose-unfocus)))
 
 (defun enclose-remove-pairing-p ()
   "Checks if removing should be on pair or not."
@@ -140,8 +166,9 @@ before `enclose-mode'."
   "Defines key bindings."
   (enclose-define-key enclose-del-key 'enclose-remove)
   (maphash
-   (lambda (key _)
-     (enclose-define-trigger key))
+   (lambda (left right)
+     (enclose-define-trigger left)
+     (enclose-define-trigger right))
    enclose-table))
 
 (defun enclose-define-trigger (key)
@@ -150,7 +177,7 @@ before `enclose-mode'."
    key
    `(lambda ()
       (interactive)
-      (enclose-insert ,key))))
+      (enclose-trigger ,key))))
 
 (defun enclose-unset-key (key)
   "Remove KEY as an encloser trigger."
