@@ -27,11 +27,11 @@
 
 (Then "^the cursor should be after \"\\(.+\\)\"$"
       (lambda (right)
-        (should (looking-at (regexp-quote right)))))
+        (should (looking-back (regexp-quote right)))))
 
 (Then "^the cursor should be before \"\\(.+\\)\"$"
       (lambda (left)
-        (should (looking-back (regexp-quote left)))))
+        (should (looking-at (regexp-quote left)))))
 
 
 (Then "^the cursor should be between \"\\(.+\\)\" and \"\\(.+\\)\"$"
