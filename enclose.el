@@ -31,9 +31,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
-
 (defvar enclose-table
   (let ((table (make-hash-table :test 'equal)))
     (puthash "\"" "\"" table)
