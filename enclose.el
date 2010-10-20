@@ -59,8 +59,8 @@
   "Delete key.")
 
 (defconst enclose-anti-regex "[a-zA-Z0-9]+"
-  "Enclosing functionality should not be activated when surrounded by
-this regex.")
+  "Enclosing functionality should not be activated when surrounded by,
+or before text matching this regex.")
 
 
 (defun enclose-trigger (key)
@@ -99,8 +99,8 @@ this regex.")
    (enclose-focus)))
 
 (defun enclose-insert-fallback (left)
-  "Do not insert pair, fallback and call function LEFT was bound to
-before `enclose-mode'."
+  "Falls back and calls function LEFT was bound to before
+`enclose-mode'."
   (enclose-command
    (enclose-fallback left)
    (enclose-unfocus)))
@@ -114,7 +114,7 @@ before `enclose-mode'."
       (looking-at enclose-anti-regex)))))
 
 (defun enclose-remove ()
-  "Called when user hits the delete key."
+  "Called when user hits the key `enclose-del-key'."
   (interactive)
   (if (enclose-remove-pairing-p)
       (enclose-remove-pair)
@@ -127,7 +127,8 @@ before `enclose-mode'."
    (enclose-focus)))
 
 (defun enclose-remove-fallback ()
-  "When enclose remove is not to be used."
+    "Falls back and calls function `enclose-del-key' was bound to
+before `enclose-mode'."
   (enclose-command
    (enclose-fallback enclose-del-key)
    (enclose-unfocus)))
@@ -160,7 +161,7 @@ before `enclose-mode'."
       (read-kbd-macro key)))))
 
 (defun enclose-define-keys ()
-  "Defines key bindings."
+  "Defines key bindings for `enclose-mode'."
   (enclose-define-key enclose-del-key 'enclose-remove)
   (maphash
    (lambda (left right)
