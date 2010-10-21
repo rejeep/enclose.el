@@ -40,3 +40,12 @@ Feature: Enclose
     When I switch to buffer "one"
     And I press "DEL"
     Then I should not see anything
+
+  Scenario: Except modes
+    Given I add text-mode as except mode
+    And I enable the global mode
+    When I open temp file "global"
+    And I enable text-mode
+    And I press "("
+    Then I should not see "()"
+    But I should see "("

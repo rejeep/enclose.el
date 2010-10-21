@@ -18,6 +18,15 @@
       (lambda ()
         (enclose-global-mode 1)))
 
+(Given "^I add \\(.+\\) as except mode$"
+       (lambda (mode)
+         (add-to-list 'enclose-except-modes (intern mode))))
+
+(And "^I enable text-mode$"
+     (lambda ()
+       (text-mode)))
+
+
 ;; TODO: Submit below to Espuds
 
 (When "^I switch to buffer \"\\(.+\\)\"$"
