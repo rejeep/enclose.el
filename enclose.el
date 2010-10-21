@@ -68,6 +68,13 @@
 ;;   (enclose-add-encloser "`" "`")
 ;;   (enclose-remove-encloser "(")
 
+;; Some modes may have conflicting key bindings with enclose. To
+;; avoid conflicts, the list `enclose-except-modes' contains names
+;; of modes where enclose should not be activated (note, only in
+;; the global mode). You can add new modes like this:
+;;   (add-to-list 'enclose-except-modes 'conflicting-mode)
+
+
 ;;; Code:
 
 (defvar enclose-table
@@ -93,6 +100,9 @@
 
 (defvar enclose-remove-pair t
   "Decides if pair should be removed, or just the left one.")
+
+(defvar enclose-except-modes '()
+  "A list of modes in which `enclose-mode' should not be activated.")
 
 (defconst enclose-del-key "DEL"
   "Delete key.")
@@ -258,7 +268,8 @@ before `enclose-mode'."
 (defun turn-on-enclose-mode ()
   "Turn on `enclose-mode'"
   (interactive)
-  (enclose-mode +1))
+  (unless (member major-mode enclose-except-modes)
+    (enclose-mode +1)))
 
 ;;;###autoload
 (defun turn-off-enclose-mode ()
