@@ -232,7 +232,7 @@ before `enclose-mode'."
 
 (defun enclose-define-key (key fn)
   "Binds KEY to FN in `enclose-mode-map'."
-  (define-key enclose-mode-map (edmacro-parse-keys key) fn))
+  (define-key enclose-mode-map (read-kbd-macro key) fn))
 
 (defun enclose-focus ()
   (setq enclose-focus t))
