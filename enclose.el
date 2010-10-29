@@ -6,7 +6,7 @@
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
 ;; Version: 0.0.1
 ;; Keywords: speed, convenience
-;; URL: http://github.com/rejeep/enclose.el
+;; URL: http://github.com/rejeep/enclose
 
 ;; This file is NOT part of GNU Emacs.
 
