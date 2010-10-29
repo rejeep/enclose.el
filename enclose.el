@@ -112,6 +112,13 @@
 or before text matching this regex.")
 
 
+(defmacro enclose-command (&rest body)
+  "Executes BODY and then updates `enclose-last-pos' accordingly."
+  `(progn
+     ,@body
+     (setq enclose-last-pos (point))))
+
+
 (defun enclose-trigger (key)
   "Called when trigger key (any key or value in `enclose-table') is hit."
   (if (enclose-jump-p key)
@@ -244,12 +251,6 @@ before `enclose-mode'."
   "Unfocus if cursor has moved."
   (if (/= enclose-last-pos (point))
       (enclose-unfocus)))
-
-(defmacro enclose-command (&rest body)
-  "Executes BODY and then updates `enclose-last-pos' accordingly."
-  `(progn
-     ,@body
-     (setq enclose-last-pos (point))))
 
 
 ;;;###autoload
