@@ -4,29 +4,29 @@ Feature: Jump
   I want to jump over right encloser
 
   Background:
-    Given enclose mode is active
+    Given I turn on enclose-mode
 
   Scenario: Jump when not moved
     When I press "("
     Then I should see "()"
     When I press ")"
     Then I should not see "())"
-    But I should see "()"
-    And the cursor should be after "()"
+     But I should see "()"
+     And the cursor should be after "()"
 
   Scenario: Do not jump when moved
     When I press "("
     Then I should see "()"
     When I press "C-f"
-    And I press "C-b"
-    And I press ")"
+     And I press "C-b"
+     And I press ")"
     Then I should see "())"
-    And the cursor should be between "()" and ")"
+     And the cursor should be between "()" and ")"
 
   Scenario: Do not jump on other encloser
     When I press "("
     Then I should see "()"
-    And I press "'"
+     And I press "'"
     Then I should not see "()"
-    But I should see "('')"
-    And the cursor should be between "('" and "')"
+     But I should see "('')"
+     And the cursor should be between "('" and "')"

@@ -1,6 +1,14 @@
-(Given "^enclose mode is active$"
+(Given "^I turn on enclose globaly$"
+       (lambda ()
+         (enclose-global-mode 1)))
+
+(Given "^I turn on enclose$"
        (lambda ()
          (enclose-mode 1)))
+
+(Given "^I turn off enclose$"
+       (lambda ()
+         (enclose-mode -1)))
 
 (Given "^remove pair option is disabled$"
        (lambda ()
@@ -14,14 +22,6 @@
        (lambda (left)
          (enclose-remove-encloser left)))
 
-(When "^I enable the global mode$"
-      (lambda ()
-        (enclose-global-mode 1)))
-
-(Given "^I add \\(.+\\) as except mode$"
+(Given "^I add \"\\(.+\\)\" as an except mode$"
        (lambda (mode)
          (add-to-list 'enclose-except-modes (intern mode))))
-
-(And "^I enable text-mode$"
-     (lambda ()
-       (text-mode)))
