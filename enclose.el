@@ -113,7 +113,7 @@ or before text matching this regex.")
 
 
 (defmacro enclose-command (&rest body)
-  "Executes BODY and then updates `enclose-last-pos' accordingly."
+  "Execute BODY and then update `enclose-last-pos' accordingly."
   `(progn
      ,@body
      (setq enclose-last-pos (point))))
@@ -132,7 +132,7 @@ or before text matching this regex.")
    (enclose-unfocus)))
 
 (defun enclose-jump-p (key)
-  "Checks if cursor should jump."
+  "Check if cursor should jump."
   (and
    enclose-focus
    (let ((value (gethash key enclose-table)))
@@ -141,7 +141,7 @@ or before text matching this regex.")
        (equal (gethash (char-to-string (char-before)) enclose-table) key))))
 
 (defun enclose-insert (left)
-  "Inserts LEFT and right buddy or falls back."
+  "Insert LEFT and right buddy or fall back."
   (if (enclose-insert-pair-p left)
       (let ((right (gethash left enclose-table)))
         (enclose-insert-pair left right))
@@ -155,14 +155,14 @@ or before text matching this regex.")
    (enclose-focus)))
 
 (defun enclose-insert-fallback (left)
-  "Falls back and calls function LEFT was bound to before
+  "Fall back and call the function that LEFT was bound to before
 `enclose-mode'."
   (enclose-command
    (enclose-fallback left)
    (enclose-unfocus)))
 
 (defun enclose-insert-pair-p (key)
-  "Checks if insertion should be a pair or not."
+  "Check if insertion should be a pair or not."
   (unless (region-active-p)
     (and
      (gethash key enclose-table)
@@ -183,14 +183,14 @@ or before text matching this regex.")
    (enclose-focus)))
 
 (defun enclose-remove-fallback ()
-    "Falls back and calls function `enclose-del-key' was bound to
+    "Fall back and call the function that `enclose-del-key' was bound to
 before `enclose-mode'."
   (enclose-command
    (enclose-fallback enclose-del-key)
    (enclose-unfocus)))
 
 (defun enclose-remove-pairing-p ()
-  "Checks if removing should be on pair or not."
+  "Check if removing should be on pair or not."
   (and
    enclose-remove-pair
    enclose-focus
@@ -210,7 +210,7 @@ before `enclose-mode'."
   (enclose-unset-key left))
 
 (defun enclose-fallback (key)
-  "Executes function that KEY was bound to before `enclose-mode'."
+  "Execute function that KEY was bound to before `enclose-mode'."
   (let ((enclose-mode nil))
     (call-interactively
      (key-binding
@@ -267,14 +267,14 @@ before `enclose-mode'."
 
 ;;;###autoload
 (defun turn-on-enclose-mode ()
-  "Turn on `enclose-mode'"
+  "Turn on `enclose-mode'."
   (interactive)
   (unless (member major-mode enclose-except-modes)
     (enclose-mode +1)))
 
 ;;;###autoload
 (defun turn-off-enclose-mode ()
-  "Turn off `enclose-mode'"
+  "Turn off `enclose-mode'."
   (interactive)
   (enclose-mode -1))
 
