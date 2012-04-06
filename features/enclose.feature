@@ -18,7 +18,7 @@ Feature: Enclose
     But I should not see "()"
 
   Scenario: Global mode
-    Given I enable the global mode
+    Given I turn on enclose globaly
     When I open temp file "global"
     And I press "("
     Then I should see "()"
@@ -42,8 +42,8 @@ Feature: Enclose
     Then I should not see anything
 
   Scenario: Except modes
-    Given I add text-mode as except mode
-    And I enable the global mode
+    Given I add "text-mode" as an except mode
+    And I turn on enclose globaly
     When I open temp file "global"
     And I turn on text-mode
     And I press "("
