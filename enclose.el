@@ -183,7 +183,7 @@ or before text matching this regex.")
    (enclose-focus)))
 
 (defun enclose-remove-fallback ()
-    "Fall back and call the function that `enclose-del-key' was bound to
+  "Fall back and call the function that `enclose-del-key' was bound to
 before `enclose-mode'."
   (enclose-command
    (enclose-fallback enclose-del-key)
