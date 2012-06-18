@@ -77,17 +77,21 @@
 
 ;;; Code:
 
-(defvar enclose-table
-  (let ((table (make-hash-table :test 'equal)))
-    (puthash "\"" "\"" table)
-    (puthash "'"  "'"  table)
-    (puthash "("  ")"  table)
-    (puthash "{"  "}"  table)
-    (puthash "["  "]"  table)
-    table)
-  "Table with encloser pairs.")
+(require 'edmacro)
+(eval-when-compile
+  (require 'cl))
 
-(defvar enclose-mode-map (make-sparse-keymap)
+(defstruct encloser left right)
+
+(defconst enclose-del-key "DEL"
+  "Delete key.")
+
+(defvar enclose-table (make-hash-table :test 'equal)
+  "Table with enclosers.")
+
+(defvar enclose-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (read-kbd-macro enclose-del-key) 'enclose-remove) map)
   "Keymap for `enclose-mode'.")
 
 (defvar enclose-focus nil
@@ -104,9 +108,6 @@
 (defvar enclose-except-modes '()
   "A list of modes in which `enclose-mode' should not be activated.")
 
-(defconst enclose-del-key "DEL"
-  "Delete key.")
-
 (defconst enclose-anti-regex "[a-zA-Z0-9]+"
   "Enclosing functionality should not be activated when surrounded by,
 or before text matching this regex.")
@@ -120,7 +121,7 @@ or before text matching this regex.")
 
 
 (defun enclose-trigger (key)
-  "Called when trigger key (any key or value in `enclose-table') is hit."
+  "Called when trigger key is pressed."
   (if (enclose-jump-p key)
       (enclose-jump)
     (enclose-insert key)))
@@ -135,15 +136,15 @@ or before text matching this regex.")
   "Check if cursor should jump."
   (and
    enclose-focus
-   (let ((value (gethash key enclose-table)))
+   (let ((value (encloser-right (gethash key enclose-table))))
      (if value (equal key value) t))
    (if (char-before)
-       (equal (gethash (char-to-string (char-before)) enclose-table) key))))
+       (equal (encloser-right (gethash (char-to-string (char-before)) enclose-table)) key))))
 
 (defun enclose-insert (left)
   "Insert LEFT and right buddy or fall back."
   (if (enclose-insert-pair-p left)
-      (let ((right (gethash left enclose-table)))
+      (let ((right (encloser-right (gethash left enclose-table))))
         (enclose-insert-pair left right))
     (enclose-insert-fallback left)))
 
@@ -197,12 +198,15 @@ before `enclose-mode'."
    (not (or (bobp) (eobp)))
    (let ((before (char-to-string (char-before)))
          (after (char-to-string (char-after))))
-     (equal (gethash before enclose-table) after))))
+     (equal (encloser-right (gethash before enclose-table)) after))))
 
 (defun enclose-add-encloser (left right)
   "Add LEFT and RIGHT as an encloser pair."
-  (puthash left right enclose-table)
-  (enclose-define-trigger left))
+  (let ((encloser (make-encloser :left left :right right)))
+    (puthash left encloser enclose-table)
+    (puthash right encloser enclose-table))
+  (enclose-define-trigger left)
+  (enclose-define-trigger right))
 
 (defun enclose-remove-encloser (left)
   "Remove LEFT as an encloser trigger."
@@ -212,18 +216,19 @@ before `enclose-mode'."
 (defun enclose-fallback (key)
   "Execute function that KEY was bound to before `enclose-mode'."
   (let ((enclose-mode nil))
-    (call-interactively
-     (key-binding
-      (read-kbd-macro key)))))
+    (execute-kbd-macro
+     (edmacro-parse-keys key))))
 
-(defun enclose-define-keys ()
-  "Defines key bindings for `enclose-mode'."
-  (enclose-define-key enclose-del-key 'enclose-remove)
-  (maphash
-   (lambda (left right)
-     (enclose-define-trigger left)
-     (enclose-define-trigger right))
-   enclose-table))
+(defun enclose-define-enclosers ()
+  "Defines defaults enclsoers."
+  (mapc
+   (lambda (pair)
+     (apply 'enclose-add-encloser pair))
+   '(("\"" "\"")
+     ("'"  "'")
+     ("("  ")")
+     ("{"  "}")
+     ("["  "]"))))
 
 (defun enclose-define-trigger (key)
   "Defines KEY as trigger."
@@ -260,7 +265,7 @@ before `enclose-mode'."
   :lighter " enc"
   :keymap enclose-mode-map
   (cond (enclose-mode
-         (enclose-define-keys)
+         (enclose-define-enclosers)
          (add-hook 'post-command-hook 'enclose-post-command))
         (t
          (remove-hook 'post-command-hook 'enclose-post-command))))
