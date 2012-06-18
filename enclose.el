@@ -1,6 +1,6 @@
 ;;; enclose.el --- Enclose cursor within punctuation pairs
 
-;; Copyright (C) 2010 Johan Andersson
+;; Copyright (C) 2010-2012 Johan Andersson
 
 ;; Author: Johan Andersson <johan.rejeep@gmail.com>
 ;; Maintainer: Johan Andersson <johan.rejeep@gmail.com>
