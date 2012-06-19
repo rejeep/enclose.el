@@ -218,8 +218,11 @@ specified, `enclose-default-context' is used."
 
 (defun enclose-remove-encloser (left)
   "Remove LEFT as an encloser trigger."
-  (remhash left enclose-table)
-  (enclose-unset-key left))
+  (let ((right (encloser-right (gethash left enclose-table))))
+    (remhash left enclose-table)
+    (remhash right enclose-table)
+    (enclose-unset-key left)
+    (enclose-unset-key right)))
 
 (defun enclose-default-context ()
   "Default encloser context."

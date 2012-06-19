@@ -17,6 +17,12 @@ Feature: Enclose
     Then I should see "("
     But I should not see "()"
 
+  Scenario: Remove right encloser key
+    Given I turn on enclose-mode
+    And I add encloser "</>"
+    And I remove encloser "<"
+    Then the key ">" should not be bound by enclose
+
   Scenario: Global mode
     Given I turn on enclose globaly
     When I open temp file "global"

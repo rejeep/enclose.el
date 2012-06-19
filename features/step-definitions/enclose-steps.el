@@ -37,4 +37,8 @@
  
 (When "^I go to beginning of line$"
        (lambda ()
-         (call-interactively 'move-beginning-of-line))) 
+         (call-interactively 'move-beginning-of-line)))
+
+(Then "^the key \"\\(.+\\)\" should not be bound by enclose$"
+       (lambda (key)
+         (should (equal (key-binding key) 'self-insert-command))))
