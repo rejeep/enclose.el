@@ -81,7 +81,7 @@
 (eval-when-compile
   (require 'cl))
 
-(defstruct encloser left right)
+(defstruct encloser left right context)
 
 (defconst enclose-del-key "DEL"
   "Delete key.")
@@ -107,10 +107,6 @@
 
 (defvar enclose-except-modes '()
   "A list of modes in which `enclose-mode' should not be activated.")
-
-(defconst enclose-anti-regex "[a-zA-Z0-9]+"
-  "Enclosing functionality should not be activated when surrounded by,
-or before text matching this regex.")
 
 
 (defmacro enclose-command (&rest body)
@@ -165,10 +161,8 @@ or before text matching this regex.")
 (defun enclose-insert-pair-p (key)
   "Check if insertion should be a pair or not."
   (unless (region-active-p)
-    (and
-     (gethash key enclose-table)
-     (not
-      (looking-at enclose-anti-regex)))))
+    (let ((encloser (gethash key enclose-table)))
+      (and encloser (funcall (encloser-context encloser))))))
 
 (defun enclose-remove ()
   "Called when user hits the key `enclose-del-key'."
@@ -200,9 +194,10 @@ before `enclose-mode'."
          (after (char-to-string (char-after))))
      (equal (encloser-right (gethash before enclose-table)) after))))
 
-(defun enclose-add-encloser (left right)
+(defun enclose-add-encloser (left right &optional mode-or-modes context)
   "Add LEFT and RIGHT as an encloser pair."
-  (let ((encloser (make-encloser :left left :right right)))
+  (or context (setq context 'enclose-default-context))
+  (let ((encloser (make-encloser :left left :right right :context context)))
     (puthash left encloser enclose-table)
     (puthash right encloser enclose-table))
   (enclose-define-trigger left)
@@ -212,6 +207,10 @@ before `enclose-mode'."
   "Remove LEFT as an encloser trigger."
   (remhash left enclose-table)
   (enclose-unset-key left))
+
+(defun enclose-default-context ()
+  "Default encloser context."
+  (not (looking-at "[a-zA-Z0-9]+")))
 
 (defun enclose-fallback (key)
   "Execute function that KEY was bound to before `enclose-mode'."

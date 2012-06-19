@@ -23,4 +23,5 @@
 
 (After
  (setq enclose-remove-pair t)
- (enclose-add-encloser "(" ")"))
+ (enclose-add-encloser "(" ")")
+ (enclose-remove-encloser "<"))
