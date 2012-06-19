@@ -24,4 +24,5 @@
 (After
  (setq enclose-remove-pair t)
  (enclose-add-encloser "(" ")")
- (enclose-remove-encloser "<"))
+ (when (gethash "<" enclose-table)
+   (enclose-remove-encloser "<")))
