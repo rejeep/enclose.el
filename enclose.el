@@ -202,7 +202,7 @@ before `enclose-mode'."
 
 (defun enclose-add-encloser (left right &optional mode-or-modes context)
   "Add LEFT and RIGHT as an encloser pair.
-  
+
 MODE-OR-MODES is reserved for future usage.
 
 CONTEXT is is a function that will be evaluated when an encloser
@@ -238,7 +238,11 @@ specified, `enclose-default-context' is used."
   "Defines defaults enclsoers."
   (mapc
    (lambda (pair)
-     (apply 'enclose-add-encloser pair))
+     (unless
+         (or
+          (gethash (nth 0 pair) enclose-table)
+          (gethash (nth 1 pair) enclose-table))
+       (apply 'enclose-add-encloser pair)))
    '(("\"" "\"")
      ("'"  "'")
      ("("  ")")

@@ -56,3 +56,10 @@ Feature: Enclose
     Then I should not see "()"
     But I should see "("
 
+  Scenario: Do not override enclosers when starting enclose-mode
+    Given I add encloser "(/)" with context "enclose-before-word-context"
+    And I turn on enclose-mode
+    And I insert "List"
+    And I go to beginning of line
+    And I press "("
+    Then I should see "()List"
