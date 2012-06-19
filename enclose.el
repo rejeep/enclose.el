@@ -65,7 +65,13 @@
 ;; Keys that encloses cursor are defined in `enclose-table'. You can
 ;; add and remove new triggers by using the functions
 ;; `enclose-add-encloser' and `enclose-remove-encloser' respectively.
+;;
+;;   ;; Add a simple encloser
 ;;   (enclose-add-encloser "`" "`")
+;;
+;;   ;; Add an encloser with a specific context.
+;;   (enclose-add-encloser "<" ">" nil 'enclose-end-of-collection-context)
+
 ;;   (enclose-remove-encloser "(")
 
 ;; Some modes may have conflicting key bindings with enclose. To
@@ -195,7 +201,14 @@ before `enclose-mode'."
      (equal (encloser-right (gethash before enclose-table)) after))))
 
 (defun enclose-add-encloser (left right &optional mode-or-modes context)
-  "Add LEFT and RIGHT as an encloser pair."
+  "Add LEFT and RIGHT as an encloser pair.
+  
+MODE-OR-MODES is reserved for future usage.
+
+CONTEXT is is a function that will be evaluated when an encloser
+key is pressed. If the function returns a truthy value, insertion
+is done, otherwise only fallback happens. When no context is
+specified, `enclose-default-context' is used."
   (or context (setq context 'enclose-default-context))
   (let ((encloser (make-encloser :left left :right right :context context)))
     (puthash left encloser enclose-table)
