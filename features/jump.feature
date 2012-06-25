@@ -31,3 +31,10 @@ Feature: Jump
     But I should see "('')"
     And the cursor should be between "('" and "')"
 
+  Scenario: Same left and right should jump
+    Given I add encloser "'/'"
+    And I turn on enclose-mode
+    And I press "'"
+    And I press "'"
+    Then I should not see "''''"
+    But I should see "''"

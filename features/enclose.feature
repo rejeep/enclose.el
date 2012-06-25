@@ -63,3 +63,10 @@ Feature: Enclose
     And I go to beginning of line
     And I press "("
     Then I should see "()List"
+
+  Scenario: Press right encloser
+    Given I add encloser "(/)"
+    And I turn on enclose-mode
+    And I press ")"
+    Then I should not see "))"
+    But I should see ")"

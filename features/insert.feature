@@ -44,3 +44,7 @@ Feature: Insert
     Then I should see "(())"
     And the cursor should be between "((" and "))"
 
+  Scenario: Same left and right should insert
+    Given I add encloser "'/'"
+    And I press "'"
+    Then I should see "''"

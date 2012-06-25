@@ -126,7 +126,15 @@
   "Called when trigger key is pressed."
   (if (enclose-jump-p key)
       (enclose-jump)
-    (enclose-insert key)))
+    (let ((left (encloser-left (gethash key enclose-table)))
+          (right (encloser-right (gethash key enclose-table))))
+      (if (and
+           (not enclose-focus)
+           (equal key right)
+           (not
+            (equal left right)))
+          (enclose-fallback key)
+        (enclose-insert key)))))
 
 (defun enclose-jump ()
   "Jump the cursor."
