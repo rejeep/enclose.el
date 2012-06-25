@@ -139,7 +139,7 @@
   (and
    enclose-focus
    (let ((value (encloser-right (gethash key enclose-table))))
-     (if value (equal key value) t))
+     (equal key value))
    (if (char-before)
        (equal (encloser-right (gethash (char-to-string (char-before)) enclose-table)) key))))
 
