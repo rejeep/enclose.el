@@ -1,0 +1,7 @@
+(source "melpa" "http://melpa.milkbox.net/packages/")
+
+(package "enclose" "0.0.2" "Enclose cursor within punctuation pairs.")
+
+(development
+ (depends-on "ecukes")
+ (depends-on "espuds"))
