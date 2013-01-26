@@ -3,6 +3,8 @@ Enclose is a minor mode for Emacs that encloses cursor within
 punctuation pairs. For example, hitting the key `(` will insert `()`
 and place the cursor in between.
 
+[<img src="http://img.youtube.com/vi/zAPQ_WgVySw/0.jpg">](https://www.youtube.com/watch?v=zAPQ_WgVySw)
+
 ## Installation
 I recommend installing via ELPA, but manual installation is simple as well:
 
