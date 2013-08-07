@@ -1,4 +1,4 @@
-# Enclose
+# Enclose [![Build Status](https://api.travis-ci.org/rejeep/enclose.png?branch=master)](http://travis-ci.org/rejeep/enclose)
 Enclose is a minor mode for Emacs that encloses cursor within
 punctuation pairs. For example, hitting the key `(` will insert `()`
 and place the cursor in between.
